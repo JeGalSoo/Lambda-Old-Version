@@ -1,7 +1,6 @@
 package user;
 
 import common.AbstractService;
-import common.UtilService;
 import common.UtilServiceImpl;
 import enums.Messenger;
 import lombok.Getter;
@@ -41,11 +40,11 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
 
     @Override
     public Optional<User> findById(Long id) {
-        return Optional.of(users
+        return users
                 .values()
                 .stream()
-                .filter(i -> i.getId().equals(id))
-                .collect(Collectors.toList()).get(0));
+                .filter(i -> i.getId().equals(id)).findAny();
+
     }
 
     @Override
@@ -77,8 +76,9 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public Map<String, ?> findUsersByNamxeFromMap(String name) {
+
+   @Override
+    public Map<String, ?> findUsersByNameFromMap(String name) {
         return users
                 .entrySet()
                 .stream()

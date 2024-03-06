@@ -54,6 +54,9 @@ public class UserView {
                 case "9":
                     System.out.println("9-회원수"+us.count());
                     break;
+                case "10":
+                    System.out.println("10-회원목록map"+us.findUsersByNameFromMap(sc));
+                    break;
 
             }
 
