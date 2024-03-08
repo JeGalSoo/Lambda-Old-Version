@@ -1,13 +1,11 @@
-package account;
+package com.bitcamp.api.account;
 
-
-import java.util.List;
-import java.util.Scanner;
 
 public interface AccountService {
-        String deposit(Account ad, Scanner sc);
 
-        String withdraw(Account ad, Scanner sc);
+    String deposit(Account account);
+    String withdraw(Account account);
+    String getBalance(String accountNumber);
 
-        List<?> getBalance(Account ad);
+
 }

@@ -1,63 +1,60 @@
-package account;
+package com.bitcamp.api.account;
 
-import common.UtilService;
-import common.UtilServiceImpl;
-import enums.Messenger;
 
-import java.util.Date;
+
+import com.bitcamp.api.enums.Messenger;
+
 import java.util.List;
 import java.util.Scanner;
 
 public class AccountController {
     AccountServiceImpl accountService;
-    UtilService us;
-    Date transactionDate;
-    public AccountController(){
-        this.accountService=AccountServiceImpl.getInstance();
-        this.us= UtilServiceImpl.getInstance();
-        transactionDate = new Date();
+
+    public AccountController() {
+        this.accountService = AccountServiceImpl.getInstance();
     }
+
     public Messenger createAccount(Scanner sc) {
-        System.out.println("이름을 입력해 주세요");
         return accountService.save(Account.builder()
-                .accountNumber(String.valueOf(us.createRandomInteger(1,3)))
+                .id(sc.nextLong())
+                .accountNumber(sc.next())
                 .accountHolder(sc.next())
-                .balance(0.0)
-                .transactionDate(transactionDate)
-                .build());
+                .balance(sc.nextDouble())
+                .transactionDate(null)
+                .build()
+
+        );
     }
 
     public String deposit(Scanner sc) {
-        System.out.println("계좌번호를 입력하세요");
         return accountService.deposit(Account.builder()
+                .id(sc.nextLong())
                 .accountNumber(sc.next())
-                .transactionDate(transactionDate)
-                .build(),sc);
+                .accountHolder(sc.next())
+                .balance(sc.nextDouble())
+                .transactionDate(null)
+                .build());
     }
 
     public String withdraw(Scanner sc) {
-        System.out.println("계좌번호를 입력하세요.");
         return accountService.withdraw(Account.builder()
-                .accountNumber(sc.next())
-                .transactionDate(transactionDate)
-                .build(),sc);
-    }
-
-    public List<?> getBalance(Scanner sc) {
-        return accountService.getBalance(Account.builder()
-                .accountNumber(sc.next())
-                .build());
-    }
-
-    public String cancelAccount(Scanner sc) {
-        System.out.println("계좌번호와 예금주명을 입력하세요.");
-        return accountService.delete(Account.builder()
+                .id(sc.nextLong())
                 .accountNumber(sc.next())
                 .accountHolder(sc.next())
-                .transactionDate(transactionDate)
+                .balance(sc.nextDouble())
+                .transactionDate(null)
                 .build());
     }
-    public List<?> getAccounts(Scanner sc) {
+
+    public String getBalance(Scanner sc) {
+        return accountService.getBalance(sc.next());
+    }
+
+    public String delete(Scanner sc) {
+        return accountService.delete(Account.builder().accountNumber(sc.next()).build());
+    }
+
+    public List<?> getAccounts() {
         return accountService.findAll();
     }
 }
