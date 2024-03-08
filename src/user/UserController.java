@@ -1,5 +1,6 @@
-package user;
+package com.bitcamp.api.user;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -7,25 +8,33 @@ import java.util.Scanner;
 
 public class UserController {
 
+    public String rm() throws SQLException {
+        return service.rm();
+    }
     UserServiceImpl service;
 
     public UserController() {
         this.service = UserServiceImpl.getInstance();
+    }
+    public String test(){return service.test();}
+    public List<?> findUsers() throws SQLException {
+        return service.findUsers();
     }
 
     public String addUsers() {
         return service.addUsers();
     }
 
-    public String save(Scanner scanner) {
-        service.save(User.builder()
+    public List<User> save1(Scanner scanner) throws SQLException {
+        return service.save1(User.builder()
                 .username(scanner.next())
-                .ssn(scanner.next())
-                .address(scanner.next())
-                .phoneNumber(scanner.next())
                 .password(scanner.next())
+                .name(scanner.next())
+                .phoneNumber(scanner.next())
+                .job(scanner.next())
+                        .height(scanner.nextDouble())
+                        .weight(scanner.nextInt())
                 .build());
-        return "회원가입 성공";
     }
 
     public List<User> findAll() {
@@ -46,8 +55,6 @@ public class UserController {
     public String updatePassword(Scanner scanner) {
         return service.updatePassword(User.builder()
                 .username(scanner.next())
-                .ssn(scanner.next())
-                .address(scanner.next())
                 .phoneNumber(scanner.next())
                 .password(scanner.next())
                 .build());
@@ -90,4 +97,11 @@ public class UserController {
         return service.getUserMap();
     }
 
+    public String touch() throws SQLException {
+        return service.touch();
+    }
+
+    public List<?> cat() throws SQLException {
+        return service.cat();
+    }
 }

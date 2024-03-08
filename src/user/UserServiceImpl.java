@@ -1,28 +1,36 @@
-package user;
+package com.bitcamp.api.user;
 
-import common.AbstractService;
-import common.UtilServiceImpl;
-import enums.Messenger;
-import lombok.Getter;
+import com.bitcamp.api.common.AbstractService;
+import com.bitcamp.api.common.UtilServiceImpl;
+import com.bitcamp.api.enums.Messenger;
 
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class UserServiceImpl extends AbstractService<User> implements UserService {
 
-    @Getter
     private static UserServiceImpl instance = new UserServiceImpl();
     Map<String, User> users;
+    List<User> lusers;
+    UserRepository ur;
 
     private UserServiceImpl(){
         this.users = new HashMap<>();
+        ur= UserRepository.getInstance();
+        lusers=new ArrayList<>();
+    }
+    public static UserServiceImpl getInstance(){return instance;}
+    @Override
+    public List<User> save1(User user) throws SQLException {
+        lusers.add(user);
+    return ur.save1(lusers);
     }
 
     @Override
     public Messenger save(User user) {
-        users.put(user.getUsername(), user);
-        return Messenger.SUCCESS;
+        return null;
     }
 
     @Override
@@ -32,19 +40,20 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
 
     @Override
     public String login(User user) {
-        return String.valueOf(users.getOrDefault(user.getUsername(), User.builder().password("").build())
+        return users.getOrDefault(user.getUsername(), User.builder()
+                        .password("").build())
                 .getPassword()
                 .equals(user.getPassword()) ?
-                "로그인 성공" : "로그인 실패");
+                "로그인 성공" : "로그인 실패";
     }
 
     @Override
     public Optional<User> findById(Long id) {
-        return users
+        return Optional.of(users
                 .values()
                 .stream()
-                .filter(i -> i.getId().equals(id)).findAny();
-
+                .filter(i -> i.getId().equals(id))
+                .collect(Collectors.toList()).get(0));
     }
 
     @Override
@@ -76,9 +85,9 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
                 .collect(Collectors.toList());
     }
 
-
-   @Override
+    @Override
     public Map<String, ?> findUsersByNameFromMap(String name) {
+
         return users
                 .entrySet()
                 .stream()
@@ -89,7 +98,10 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
 
     @Override
     public List<?> findUsersByJob(String job) {
-
+        System.out.println("findUsersByJob 파라미터 : "+job);
+        users
+                .values()
+                .stream().forEach(i->System.out.println("직업 :"+i.getJob()));
         return users
                 .values()
                 .stream()
@@ -121,6 +133,36 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     public Map<String, ?> getUserMap() {
         return users;
     }
+
+    @Override
+    public String test() {
+        return ur.test();
+    }
+
+    @Override
+    public List<?> findUsers() throws SQLException {
+        return ur.findUsers();
+    }
+
+    @Override
+    public String touch() throws SQLException {
+        return ur.touch();
+    }
+
+    @Override
+    public String rm() throws SQLException {
+        return ur.rm();
+    }
+
+    @Override
+    public List<?> cat() {
+        return ur.cat();
+    }
+
+//    @Override
+//    public Map<String,User> save(User user) throws SQLException {
+//        return ur.save1(users.put(user.getUsername(),user));
+//    }
 
     @Override
     public String addUsers() {
