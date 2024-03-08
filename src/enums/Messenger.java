@@ -1,4 +1,4 @@
-package enums;
+package com.bitcamp.api.enums;
 
 public enum Messenger {
     SUCCESS, FAIL
