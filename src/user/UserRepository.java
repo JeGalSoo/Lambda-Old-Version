@@ -1,16 +1,18 @@
-package com.bitcamp.api.user;
+package com.turing.api.user;
 
-import com.bitcamp.api.ReView.ReView;
-import com.bitcamp.api.enums.Messenger;
+import com.mysql.cj.protocol.Message;
+import com.mysql.cj.protocol.Resultset;
 
+import javax.annotation.processing.Messager;
+import javax.swing.text.html.HTMLDocument;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
 
 public class UserRepository {
-    private static UserRepository instance;
+    private static final UserRepository instance;
+    private PreparedStatement pstmt;
+    private Resultset rs;
 
     static {
         try {
@@ -20,7 +22,6 @@ public class UserRepository {
         }
     }
 
-    List<User> list;
     Connection connection;
 
     private UserRepository() throws SQLException {
@@ -28,7 +29,6 @@ public class UserRepository {
                 "jdbc:mysql://localhost:3306/turingdb",
                 "turing",
                 "password");
-        list = new ArrayList<>();
     }
 
     public static UserRepository getInstance() {
@@ -43,6 +43,7 @@ public class UserRepository {
         String sql = "INSERT INTO users (username, password, name, phone_number, " +
                 " job, height, weight)" +
                 "VALUES (?, ?, ?, ?, ?, ?,?)";
+        List<User> ls = new ArrayList<>();
         PreparedStatement pstmt = connection.prepareStatement(sql);
         pstmt.setString(1,users.get(0).getUsername());
         pstmt.setString(2,users.get(0).getPassword());
@@ -51,9 +52,8 @@ public class UserRepository {
         pstmt.setString(5,users.get(0).getJob());
         pstmt.setDouble(6,users.get(0).getHeight());
         pstmt.setDouble(7,users.get(0).getWeight());
-       pstmt.executeUpdate();
+        pstmt.executeUpdate();
         pstmt.close();
-        List<User> ls = new ArrayList<>();
         return ls;
     }
 
@@ -77,7 +77,7 @@ public class UserRepository {
         return null;
     }
 
-    public String touch() throws SQLException {
+    public Messager touch() throws SQLException {
         String sql = "CREATE TABLE users (\n" +
                 "    id INT AUTO_INCREMENT PRIMARY KEY,\n" +
                 "    username VARCHAR(20) NOT NULL,\n" +
@@ -88,14 +88,16 @@ public class UserRepository {
                 "    height VARCHAR(20),\n" +
                 "    weight VARCHAR(20)\n" +
                 ");";
-        try {
-            PreparedStatement pstmt = connection.prepareStatement(sql);
-            pstmt.executeUpdate();
-            pstmt.close();
-        }catch (Exception e){
-            return "You have the table";
-        }
-        return "회원테이블 생성 성공";
+        pstmt=connection.prepareStatement(sql);
+        return
+//        try {
+//            PreparedStatement pstmt = connection.prepareStatement(sql);
+//            pstmt.executeUpdate();
+//            pstmt.close();
+//        }catch (Exception e){
+//            return "You already have the table";
+//        }
+//        return "회원테이블 생성 성공";
     }
 
     public String rm() throws SQLException {
@@ -111,6 +113,7 @@ public class UserRepository {
     }
 
     public List<?> cat() {
+        List<User> list=new ArrayList<>();
         String sql = "select * from users";
         try {
             PreparedStatement pstmt = connection.prepareStatement(sql);

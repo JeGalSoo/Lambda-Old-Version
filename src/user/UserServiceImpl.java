@@ -1,8 +1,8 @@
-package com.bitcamp.api.user;
+package com.turing.api.user;
 
-import com.bitcamp.api.common.AbstractService;
-import com.bitcamp.api.common.UtilServiceImpl;
-import com.bitcamp.api.enums.Messenger;
+import com.turing.api.common.AbstractService;
+import com.turing.api.common.UtilServiceImpl;
+import com.turing.api.enums.Messenger;
 
 import java.sql.SQLException;
 import java.util.*;

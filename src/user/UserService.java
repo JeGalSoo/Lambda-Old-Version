@@ -1,4 +1,4 @@
-package com.bitcamp.api.user;
+package com.turing.api.user;
 
 import java.sql.SQLException;
 import java.util.List;
