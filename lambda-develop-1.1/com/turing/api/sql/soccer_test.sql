@@ -41,7 +41,7 @@ from player;
 -- 키는 170 센티미터 이상이고 180 이하여야 한다.
 SELECT player_name, height, team_id
 FROM player
-WHERE POSITION='mf' AND height between 170 and 180 AND team_id=(SELECT team_id FROM team WHERE team_name='삼성블루윙즈');
+WHERE POSITION='mf' AND height between 170 and 180 AND team_id in (SELECT team_id FROM team WHERE team_name='삼성블루윙즈' or team_id='드래곤즈');
 --수원을 연고지로 하는 골키퍼는 누구인가?
 select player_name
 from player
@@ -51,6 +51,10 @@ select player_name, if(height=0,0,height), if(weight=0,0,weight)
 from player
 order by height desc, weight desc;
 -- 문제 9-- 서울팀 선수들 이름과 포지션과-- 키(cm표시)와 몸무게(kg표시)와  각 선수의 BMI지수를 출력하시오-- 단, 키와 몸무게가 없으면 "0" 표시하시오-- BMI는 "NONE" 으로 표시하시오(as bmi)-- 최종 결과는 이름내림차순으로 정렬하시오
-select player_name, position, if(height='',0,concat(height,'cm')), if(weight='',0,concat(weight,'kg')), round(if(weight=0 or height=0,'NONE',weight/((height/100)*(height/100))),1) as bmi
+select player_name, position, if(height='',0,concat(height,'cm')), if(weight='',0,concat(weight,'kg')), if(weight='' or height='','NONE',round(weight/((height/100)*(height/100)),1)) as bmi
 from player
 order by player_name desc;
+select player_name, position, if(height='',0,concat(height,'cm')), if(weight='',0,concat(weight,'kg')), IFNULL(((weight/(height*height))*10000),'NONE') AS BMI
+from player
+order by player_name desc;
+----------------------------------------------------------------------------
