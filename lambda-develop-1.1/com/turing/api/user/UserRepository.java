@@ -42,11 +42,10 @@ public class UserRepository {
         return "UserRepository 연결";
     }
 
-    public List<User>  save1(List<User> users) throws SQLException {
+    public Messenger  save1(List<User> users) throws SQLException {
         String sql = "INSERT INTO users (username, password, name, phone_number, " +
                 " job, height, weight)" +
                 "VALUES (?, ?, ?, ?, ?, ?,?)";
-        List<User> ls = new ArrayList<>();
         PreparedStatement pstmt = connection.prepareStatement(sql);
         pstmt.setString(1,users.get(0).getUsername());
         pstmt.setString(2,users.get(0).getPassword());
@@ -55,9 +54,7 @@ public class UserRepository {
         pstmt.setString(5,users.get(0).getJob());
         pstmt.setDouble(6,users.get(0).getHeight());
         pstmt.setDouble(7,users.get(0).getWeight());
-        pstmt.executeUpdate();
-        pstmt.close();
-        return ls;
+        return (pstmt.executeUpdate() == 0) ? Messenger.SUCCESS: Messenger.FAIL;
     }
 
     public List<?> findUsers() throws SQLException {
@@ -75,7 +72,6 @@ public class UserRepository {
         } else {
             System.out.println("데이터가 없습니다.");
         }
-        rs.close();
         pstmt.close();
         return null;
     }
@@ -103,16 +99,12 @@ public class UserRepository {
 //        return "회원테이블 생성 성공";
     }
 
-    public String rm() throws SQLException {
+    public Messenger rm() throws SQLException {
         String sql = "DROP TABLE users;";
-        try {
+
             PreparedStatement pstmt = connection.prepareStatement(sql);
-            pstmt.executeUpdate();
-            pstmt.close();
-        }catch(Exception e){
-            return "You don't have the table";
-        }
-        return "회원테이블 삭제 성공";
+        return (pstmt.executeUpdate() == 0) ? Messenger.SUCCESS: Messenger.FAIL;
+
     }
 
     public List<?> cat() {

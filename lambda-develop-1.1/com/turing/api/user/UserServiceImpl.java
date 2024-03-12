@@ -23,7 +23,7 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     }
     public static UserServiceImpl getInstance(){return instance;}
     @Override
-    public List<User> save1(User user) throws SQLException {
+    public Messenger save1(User user) throws SQLException {
         lusers.add(user);
     return ur.save1(lusers);
     }
@@ -150,7 +150,7 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     }
 
     @Override
-    public String rm() throws SQLException {
+    public Messenger rm() throws SQLException {
         return ur.rm();
     }
 

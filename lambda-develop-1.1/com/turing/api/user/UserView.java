@@ -5,13 +5,14 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class UserView {
-    public static void main(Scanner scanner) throws SQLException {
+    public static String main() throws SQLException {
         UserController controller = new UserController();
         String msg = controller.addUsers();
+        Scanner scanner = new Scanner(System.in);
         System.out.println(" addUsers 결과 : "+msg);
         while(true){
-            System.out.println("[사용자메뉴] 0-종료\n" +
-                    "1-회원가입\n" +
+            System.out.println("[사용자메뉴] 0-종료\n==============" +
+                    "1-회원가입\n===========" +
                     "2-로그인\n" +
                     "3-ID검색\n" +
                     "4-비번변경\n" +
@@ -20,12 +21,12 @@ public class UserView {
                     "7-이름검색\n" +
                     "8-직업검색\n" +
                     "9-회원수\n" +
-                    "touch-테이블 생성\n" +
-                    "rm-테이블 조회\n" +
-                    "cat-테이블 조회");
+                    "touch-테이블 생성======================\n" +
+                    "rm-테이블 조회=======================\n" +
+                    "cat-테이블 조회===================");
             switch (scanner.next()){
                 case "0":
-                    System.out.println("종료");return;
+                    System.out.println("종료");return "wqewqe";
                 case "1":
                     System.out.println("1-회원가입");
                     System.out.println(controller.save1(scanner));

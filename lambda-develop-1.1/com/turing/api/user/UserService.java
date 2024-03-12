@@ -22,9 +22,9 @@ public interface UserService {
 
     Messenger touch() throws SQLException;
 
-    String rm() throws SQLException;
+    Messenger rm() throws SQLException;
 
     List<?> cat();
 
-    List<User> save1(User user) throws SQLException;
+    Messenger save1(User user) throws SQLException;
 }

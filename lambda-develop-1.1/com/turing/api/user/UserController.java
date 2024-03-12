@@ -9,8 +9,14 @@ import java.util.Optional;
 import java.util.Scanner;
 
 public class UserController {
+    private static UserController instance = new UserController();
 
-    public String rm() throws SQLException {
+
+    public static UserController getInstance() {
+        return instance;
+    }
+
+    public Messenger rm() throws SQLException {
         return service.rm();
     }
     UserServiceImpl service;
@@ -27,7 +33,7 @@ public class UserController {
         return service.addUsers();
     }
 
-    public List<User> save1(Scanner scanner) throws SQLException {
+    public Messenger save1(Scanner scanner) throws SQLException {
         return service.save1(User.builder()
                 .username(scanner.next())
                 .password(scanner.next())
