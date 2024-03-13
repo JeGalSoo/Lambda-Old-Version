@@ -28,11 +28,13 @@ where height>=170 and player_name like '고%' and team_id=(select team_id from t
 select *
 from stadium;
 select *
-from schedule;
+from schedule
+where sche_date=20120317;;
 select *
 from team;
 select *
-from player;
+from player
+order by team_id,height
 -- 문제 6
 -- 다음 조건을 만족하는 선수명단을 출력하시오
 -- 소속팀이 삼성블루윙즈이거나
@@ -77,17 +79,17 @@ order by t.team_id ,p.player_name;
 -- 팀과 연고지를 연결해서 출력하시오
 -- [팀 명]             [홈구장]
 -- 수원[ ]삼성블루윙즈 수원월드컵경기장
-select concat(region_name,'[]',team_name,' ',s.stadium_name)
+select concat(region_name,' ',team_name,' ',s.stadium_name) as team_name
 from stadium s
 join team t on s.stadium_id=t.stadium_id
 -- 문제 12
 -- 수원팀(K02) 과 대전팀(K10) 선수들 중
 -- 키가 180 이상 183 이하인 선수들
 -- 키, 팀명, 사람명 오름차순
-select player_name
+select p.player_name
 from team t
 join player p on t.team_id=p.team_id
-where p.height between 180 and 183 and team_id in ('k02','k10')
+where p.height between 180 and 183 and t.team_id in ('k02','k10')
 order by team_name, player_name;
 -- 문제 13
 -- 모든 선수들 중 포지션을 배정 받지 못한 선수들의
@@ -103,8 +105,132 @@ order by team_name, player_name
 -- 2012년 3월 17일에 열린 각 경기의
 -- 팀이름, 스타디움, 어웨이팀 이름 출력
 -- 다중테이블 join 을 찾아서 해결하시오.
-select awayteam_id,
+select (select team_name from team where team.team_id=schedule.awayteam_id) as awayteam_name,
 (select stadium_name from stadium where stadium.stadium_id=schedule.stadium_id) as stadium_name,
 (select team_name from team where team.stadium_id=schedule.stadium_id) as team_name
 from schedule
-where sche_date=20120317;
+where sche_date=20120317
+-- 문제 15
+-- 2012년 3월 17일 경기에
+-- 포항 스틸러스 소속 골키퍼(GK)
+-- 선수, 포지션,팀명 (연고지포함),
+-- 스타디움, 경기날짜를 구하시오
+-- 연고지와 팀이름은 간격을 띄우시오(수원[]삼성블루윙즈)
+select player_name, POSITION,
+(select concat(t.region_name,' ',t.team_name) from team t where p.team_id=t.team_id) as team_name,
+(select stadium_id from stadium where stadium_id=(select)
+from player p
+where position='GK' AND
+p.team_id = (SELECT hometeam_id from schedule s where sche_date=20120317 AND s.hometeam_id=
+(SELECT team_id FROM team WHERE region_name='포항'));
+-- 문제 16
+-- 홈팀이 3점이상 차이로 승리한 경기의
+-- 경기장 이름, 경기 일정
+-- 홈팀 이름과 원정팀 이름을
+-- 구하시오
+select s.stadium_name, sc.sche_date,
+      (select t.team_name
+       from team t
+       where sc.awayteam_id = t.team_id) 'awayteam',
+      (select t.team_name
+       from team t
+       where sc.hometeam_id = t.team_id) 'hometeam'
+from stadium s
+join team t using(stadium_id)
+join schedule sc using (stadium_id)
+where sc.home_score-sc.away_score>=3
+-- 문제 17
+-- STADIUM 에 등록된 운동장 중에서
+-- 홈팀이 없는 경기장까지 전부 나오도록
+-- 카운트 값은 19
+-- 힌트 : LEFT JOIN 사용해야함
+select stadium_name,(select t.team_name
+                     from team t
+                     where t.stadium_id = st.stadium_id)
+from stadium st;
+------------------------------------------------위가 더 좋은 답안(join을 쓰면 더 느려지고 용량을 많이 먹음
+select s.stadium_name, t.team_name
+from stadium s left join team t using(stadium_id);
+--문제 18 페이지네이션 로직을 위한
+--플레이어 테이블에서 최상단 5개 로우를 출력
+select *
+from player
+order by 1 limit 0, 5;
+-- 문제 19 (그룹바이: 집계함수 - 딱 5개 min, max, count, sum, avg)
+-- 평균키가 인천 유나이티스팀('K04')의 평균키  보다 작은 팀의
+-- 팀ID, 팀명, 평균키 추출
+-- 인천 유나이티스팀의 평균키 -- 176.59
+-- 키와 몸무게가 없는 칸은 0 값으로 처리한 후 평균값에
+-- 포함되지 않도록 하세요.
+select team_id, team_name, round(avg(height),2)
+from team t
+join player p USING (team_id)
+where height!=''
+GROUP by p.team_id
+HAVING AVG(height)<176.59;
+-------------------------
+select p.team_id, team_name,round(avg(height),2)
+from team t
+join player p on t.team_id = p.team_id
+where if(p.height='',0,p.height)
+group by p.team_id
+having avg(p.height)<(select avg(p.height)
+                      from team
+                      join player p
+                      using(team_id)
+                      where region_name='인천');
+-- 문제 20
+-- 포지션이 MF 인 선수들의 소속팀명 및  선수명, 백넘버 출력
+SELECT (SELECT team_name
+        FROM team t
+        WHERE t.team_id=player.team_id),
+        back_no
+FROM player
+WHERE POSITION='mf';
+-------------------------------------
+select t.team_name, p.player_name, p.back_no
+from team t
+join player p on t.team_id =p.team_id
+where p.position='mf'
+-- 문제 21
+-- 가장 키큰 선수 5명 소속팀명 및  선수명, 백넘버 출력,
+-- 단 키  값이 없으면 제외
+SELECT (SELECT team_name
+        FROM team t
+        WHERE t.team_id=player.team_id),
+        player_name, back_no
+FROM player
+WHERE height!=''
+ORDER BY height DESC limit 5;
+----------------------------
+select (select t.team_name from team t p.player_name)
+from player p
+order by height desc limit 5;
+-- 문제 22
+-- 선수 자신이 속한 팀의 평균키보다 작은  선수 정보 출력
+-- (select round(avg(height),2) from player)
+SELECT *
+FROM player p
+join team t on p.team_id=t.team_id
+where height!='' and height<(select round(avg(height),2)
+                             from player p
+                             group by team_id
+                             having p.team_id=t.team_id)
+order by p.team_id
+---------------------------------
+select p.*
+from player p
+join (select p2.team_id, round(AVG(p2.height),2) avg
+        from player p2
+        where p2.height!=''
+        group by p2.team_id) t_avg using(team_id)
+where p.height !=''
+and p.height<AVG
+order by team_id, height desc
+-- 문제 23
+-- 2012년 5월 한달간 경기가 있는 경기장  조회
+select distinct s.*
+from schedule st
+join stadium s on st.stadium_id=s.stadium_id
+where sche_date like '201205%'
+---------------------------------
