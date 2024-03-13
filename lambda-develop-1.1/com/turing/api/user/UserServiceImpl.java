@@ -39,22 +39,25 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     }
 
     @Override
-    public String login(User user) {
-        return users.getOrDefault(user.getUsername(), User.builder()
-                        .password("").build())
-                .getPassword()
-                .equals(user.getPassword()) ?
-                "로그인 성공" : "로그인 실패";
+    public Optional<User> findById(Long id) {
+        return Optional.empty();
     }
 
     @Override
-    public Optional<User> findById(Long id) {
-        return Optional.of(users
-                .values()
-                .stream()
-                .filter(i -> i.getId().equals(id))
-                .collect(Collectors.toList()).get(0));
+    public Messenger login(User user) throws SQLException {
+        lusers.add(user);
+        return ur.login(user);
+
+//                login(user.getUsername(), User.builder()
+//                        .password("").build())
+//                .equals(user.getPassword()) ?
+//                "로그인 성공" : "로그인 실패";
     }
+
+//    @Override
+//    public String findById(String id) throws SQLException {
+//        return null;
+//    }
 
     @Override
     public String updatePassword(User user) {
@@ -120,8 +123,8 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     }
 
     @Override
-    public String count() {
-        return users.size()+"";
+    public String count() throws SQLException {
+        return ur.count();
     }
 
     @Override
@@ -132,6 +135,11 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     @Override
     public Map<String, ?> getUserMap() {
         return users;
+    }
+
+    @Override
+    public String findUsername(String sc) throws SQLException {
+        return ur.findUsername(sc);
     }
 
     @Override

@@ -25,17 +25,17 @@ public class UserView {
                     "rm-테이블 조회=======================\n" +
                     "cat-테이블 조회===================");
             switch (scanner.next()){
-                case "0":
-                    System.out.println("종료");return "wqewqe";
-                case "1":
-                    System.out.println("1-회원가입");
-                    System.out.println(controller.save1(scanner));
-                    break;
-                case "2":
-                    System.out.println("2-로그인");
-                    msg = controller.login(scanner);
-                    System.out.println("로그인 결과 : "+msg);
-                    break;
+//                case "0":
+//                    System.out.println("종료");return "wqewqe";
+//                case "1":
+//                    System.out.println("1-회원가입");
+//                    System.out.println(controller.save1(scanner));
+//                    break;
+//                case "2":
+//                    System.out.println("2-로그인");
+//                    msg = controller.login(scanner);
+//                    System.out.println("로그인 결과 : "+msg);
+//                    break;
                 case "3":
                     System.out.println("3-ID 검색");
                     System.out.println(controller.getOne(scanner));
@@ -48,13 +48,13 @@ public class UserView {
                     System.out.println("5-탈퇴");
                     System.out.println(controller.delete(scanner));
                     break;
-                case "ls":
-                    System.out.println("6-회원목록");
-                    Map<String, ?> users = controller.getUserMap();
-                    users.forEach((k,v)->{
-                        System.out.printf("아이디: %s, 회원정보: %s", k, v);
-                    });
-                    break;
+//                case "ls":
+//                    System.out.println("6-회원목록");
+//                    Map<String, ?> users = controller.getUserMap();
+//                    users.forEach((k,v)->{
+//                        System.out.printf("아이디: %s, 회원정보: %s", k, v);
+//                    });
+//                    break;
                 case "7":
                     System.out.println("7-이름검색");
                     controller.findUsersByName(scanner).forEach((i)->{
@@ -67,20 +67,20 @@ public class UserView {
                         System.out.println(i);
                     });
                     break;
-                case "9":
-                    System.out.println("9-회원수");
-                    System.out.println("회원수 "+controller.count());
-                    break;
-                case "touch":
-                    System.out.println(controller.touch());
-                    break;
-                case "rm":
-                    System.out.println(controller.rm());
-                    break;
-                case "cat":
-                    System.out.println("회원테이블 조회");
-                    System.out.println(controller.cat());
-                    break;
+//                case "9":
+//                    System.out.println("9-회원수");
+//                    System.out.println("회원수 "+controller.count());
+//                    break;
+//                case "touch":
+//                    System.out.println(controller.touch());
+//                    break;
+//                case "rm":
+//                    System.out.println(controller.rm());
+//                    break;
+//                case "cat":
+//                    System.out.println("회원테이블 조회");
+//                    System.out.println(controller.cat());
+//                    break;
 
             }
 

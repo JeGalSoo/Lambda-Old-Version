@@ -49,15 +49,15 @@ public class UserController {
         return service.findAll();
     }
 
-    public String login(Scanner scanner) {
+    public Messenger login(Scanner scanner) throws SQLException {
         return service.login(User.builder()
                 .username(scanner.next())
                 .password(scanner.next())
                 .build());
     }
 
-    public Optional<User> findById(Scanner scanner) {
-        return service.findById(Long.parseLong(scanner.next()));
+    public String findUsername(Scanner scanner) throws SQLException {
+        return service.findUsername(scanner.next());
     }
 
     public String updatePassword(Scanner scanner) {
@@ -95,7 +95,7 @@ public class UserController {
         return service.findUsersByJobFromMap(scanner.next());
     }
 
-    public String count() {
+    public String count() throws SQLException {
         return service.count();
     }
     public Optional<User> getOne(Scanner scanner) {

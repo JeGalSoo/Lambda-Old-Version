@@ -8,28 +8,52 @@ import java.util.function.Function;
 
 public enum UserRouter {
     exit("e",i-> {
-        return Messenger.FAIL;
+        return false;
     }),
-//    count("q",i-> {
-//            return UserController.getInstance().count();
-//    }),
+    find_id("f",i-> {
+        try {
+            System.out.println(UserController.getInstance().findUsername(i));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }),
+    count("q",i-> {
+        try {
+            System.out.println(UserController.getInstance().count());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }),
     save("s",i-> {
         try {
-            return UserController.getInstance().save1(i);
+            System.out.println(UserController.getInstance().save1(i));
+            return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }),
+    login("l",i-> {
+        try {
+            System.out.println(UserController.getInstance().login(i));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }),
     touch("t",i-> {
         try {
-            return UserController.getInstance().touch();
+            System.out.println(UserController.getInstance().touch());
+            return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }),
     rm("r",i-> {
         try {
-            return UserController.getInstance().rm();
+            System.out.println(UserController.getInstance().rm());
+            return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -37,31 +61,31 @@ public enum UserRouter {
     cat("c",i-> {
         try {
             System.out.println(UserController.getInstance().cat());
-            return null;
+            return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     })
     ;
     private final String num;
-    private final Function<Scanner, Messenger> function;
+    private final Function<Scanner, Boolean> function;
 
-    UserRouter(String num, Function<Scanner,Messenger> predicate) {
+    UserRouter(String num, Function<Scanner,Boolean> predicate) {
         this.num = num;
         this.function = predicate;
     }
-    public static Messenger getOperator(Scanner sc){
-        System.out.println("t-테이블 생성\n" +
-                "r-테이블 삭제\n" +
-                "c-테이블 조회\n" +
-                "s-회원 가입\n" +
-                "q-회원 수");
+    public static boolean getOperator(Scanner sc){
+        System.out.println("t-create table\n" +
+                "r-drop table\n" +
+                "c-find users\n" +
+                "s-join\n" +
+                "q-count users\n" +
+                "l-login\n" +
+                "f-find username");
         String a=sc.next();
-        while(true) {
             return Arrays.stream(values())
                     .filter(i -> i.num.equals(a))
                     .findAny().orElseThrow(() -> new IllegalArgumentException("error"))
                     .function.apply(sc);
-        }
     }
 }

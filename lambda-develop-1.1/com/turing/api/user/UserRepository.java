@@ -1,11 +1,9 @@
 package com.turing.api.user;
 
-import com.mysql.cj.protocol.Message;
 import com.mysql.cj.protocol.Resultset;
 import com.turing.api.enums.Messenger;
 
-import javax.annotation.processing.Messager;
-import javax.swing.text.html.HTMLDocument;
+import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +12,7 @@ public class UserRepository {
     private static final UserRepository instance;
     private PreparedStatement pstmt;
     private Resultset rs;
+    List<String> list;
 
     static {
         try {
@@ -41,20 +40,16 @@ public class UserRepository {
     public String test() {
         return "UserRepository 연결";
     }
-
-    public Messenger  save1(List<User> users) throws SQLException {
-        String sql = "INSERT INTO users (username, password, name, phone_number, " +
-                " job, height, weight)" +
-                "VALUES (?, ?, ?, ?, ?, ?,?)";
-        PreparedStatement pstmt = connection.prepareStatement(sql);
-        pstmt.setString(1,users.get(0).getUsername());
-        pstmt.setString(2,users.get(0).getPassword());
-        pstmt.setString(3,users.get(0).getName());
-        pstmt.setString(4,users.get(0).getPhoneNumber());
-        pstmt.setString(5,users.get(0).getJob());
-        pstmt.setDouble(6,users.get(0).getHeight());
-        pstmt.setDouble(7,users.get(0).getWeight());
-        return (pstmt.executeUpdate() == 0) ? Messenger.SUCCESS: Messenger.FAIL;
+    public String count() throws SQLException {
+        String sql = "select count(*) from users";
+        PreparedStatement pstmt=connection.prepareStatement(sql);
+        ResultSet rs= pstmt.executeQuery();
+        if(rs.next()){
+            int a= rs.getInt(1);
+            return a + "개 입니다.";
+        } else {
+            return "실패했습니다.";
+        }
     }
 
     public List<?> findUsers() throws SQLException {
@@ -76,6 +71,21 @@ public class UserRepository {
         return null;
     }
 
+    public Messenger  save1(List<User> users) throws SQLException {
+        String sql = "INSERT INTO users (username, password, name, phone_number, " +
+                " job, height, weight)" +
+                "VALUES (?, ?, ?, ?, ?, ?,?)";
+        PreparedStatement pstmt = connection.prepareStatement(sql);
+        pstmt.setString(1,users.get(0).getUsername());
+        pstmt.setString(2,users.get(0).getPassword());
+        pstmt.setString(3,users.get(0).getName());
+        pstmt.setString(4,users.get(0).getPhoneNumber());
+        pstmt.setString(5,users.get(0).getJob());
+        pstmt.setDouble(6,users.get(0).getHeight());
+        pstmt.setDouble(7,users.get(0).getWeight());
+        return (pstmt.executeUpdate() == 0) ? Messenger.SUCCESS: Messenger.FAIL;
+    }
+
     public Messenger touch() throws SQLException {
         String sql = "CREATE TABLE users (\n" +
                 "    id INT AUTO_INCREMENT PRIMARY KEY,\n" +
@@ -89,14 +99,6 @@ public class UserRepository {
                 ");";
         pstmt=connection.prepareStatement(sql);
         return (pstmt.executeUpdate() == 0) ? Messenger.SUCCESS: Messenger.FAIL;
-//        try {
-//            PreparedStatement pstmt = connection.prepareStatement(sql);
-//            pstmt.executeUpdate();
-//            pstmt.close();
-//        }catch (Exception e){
-//            return "You already have the table";
-//        }
-//        return "회원테이블 생성 성공";
     }
 
     public Messenger rm() throws SQLException {
@@ -135,5 +137,26 @@ public class UserRepository {
         }
 
         return list;
+    }
+    public Messenger login(User user) throws SQLException {
+        String sql = "SELECT username,password FROM users WHERE username = ?";
+        pstmt = connection.prepareStatement(sql);
+        pstmt.setString(1,user.getUsername());
+        ResultSet rs = pstmt.executeQuery();
+        return rs.next() ?
+                rs.getString("password").equals(user.getPassword()) ?
+                        Messenger.SUCCESS : Messenger.FAIL
+                : Messenger.FAIL;
+    }
+    public String findUsername(String sc) throws SQLException {
+        String sql = "SELECT username FROM users WHERE username = ?";
+        pstmt = connection.prepareStatement(sql);
+        pstmt.setString(1,sc);
+        ResultSet rs = pstmt.executeQuery();
+        if(rs.next()){
+            return "아이디가 있습니다.";
+        } else {
+            return "아이디가 없습니다.";
+        }
     }
 }
